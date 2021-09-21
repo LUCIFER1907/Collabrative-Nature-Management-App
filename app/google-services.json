@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "944903563857",
+    "project_id": "cnm-app-832da",
+    "storage_bucket": "cnm-app-832da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:944903563857:android:088242335dd2828f2aa670",
+        "android_client_info": {
+          "package_name": "com.allen.collabrativenaturemanagementapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "944903563857-vtlccrf3nm5e2f1dcaoeqmhilb9o6pqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQWsksV3TrMT0QtbVqg-HijKjCgOaihbc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "944903563857-vtlccrf3nm5e2f1dcaoeqmhilb9o6pqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
