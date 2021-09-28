@@ -26,21 +26,8 @@
         app:headerLayout="@layout/drawer_header"
         app:menu="@menu/drawer_menu" >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="This is My Dashboard"
-            android:textColor="#0445D1"
-            android:textSize="20dp" />
 
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="200dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="60dp"
-            android:text="Logout"
-            android:textAllCaps="false"
-            android:textSize="20dp" />
+
 
     </com.google.android.material.navigation.NavigationView>
 
