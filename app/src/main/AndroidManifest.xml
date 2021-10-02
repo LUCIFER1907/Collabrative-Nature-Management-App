@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CollabrativeNatureManagementApp">
+        <activity android:name=".Addnew"></activity>
         <activity
             android:name=".DashboardActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
@@ -20,6 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

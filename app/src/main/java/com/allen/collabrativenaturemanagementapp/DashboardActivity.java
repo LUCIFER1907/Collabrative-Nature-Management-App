@@ -52,7 +52,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 break;
             case R.id.add_icon :
                 Toast.makeText(DashboardActivity.this, "add_icon Clicked", Toast.LENGTH_SHORT).show();
-                //startActivity(new Intent(getApplicationContext(), diseases.class));
+                startActivity(new Intent(getApplicationContext(), Addnew.class));
                 break;
             case R.id.area :
                 Toast.makeText(DashboardActivity.this, "area Clicked", Toast.LENGTH_SHORT).show();
