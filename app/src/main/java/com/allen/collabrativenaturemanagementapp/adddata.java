@@ -15,9 +15,11 @@ public class adddata extends AppCompatActivity {
 
         Type =  getIntent().getStringExtra("type");
 
+
         // Testing
         type = findViewById(R.id.Test2);
         type.setText(Type);
+
 
 
         //Testing
