@@ -19,11 +19,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.072" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
-        android:text="Buttons "
-        tools:layout_editor_absoluteX="81dp"
-        tools:layout_editor_absoluteY="247dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
