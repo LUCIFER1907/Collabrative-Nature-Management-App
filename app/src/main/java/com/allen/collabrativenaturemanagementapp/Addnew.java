@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -12,6 +13,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -19,12 +22,53 @@ import java.util.List;
 import java.util.Locale;
 
 public class Addnew extends AppCompatActivity {
-
+    public Button Birds, Animals, Landscape;
+    String DBroot;
+    Double Latitude, Longitude;
+    String city;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addnew);
 
+
+        Birds = findViewById(R.id.BirdBtn);
+        Animals = findViewById(R.id.AnimalBtn);
+        Landscape = findViewById(R.id.sceneBtn);
+
+        Birds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Addnew.this,adddata.class);
+                startActivity(intent);
+                intent.putExtra("type", "Birds");
+                intent.putExtra("latitude", Latitude);
+                intent.putExtra("longitude", Longitude);
+                intent.putExtra("city", city);
+            }
+        });
+        Animals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Addnew.this,adddata.class);
+                startActivity(intent);
+                intent.putExtra("type", "Animals");
+                intent.putExtra("latitude", Latitude);
+                intent.putExtra("longitude", Longitude);
+                intent.putExtra("city", city);
+            }
+        });
+        Landscape.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Addnew.this,adddata.class);
+                startActivity(intent);
+                intent.putExtra("type", "Landscape");
+                intent.putExtra("latitude", Latitude);
+                intent.putExtra("longitude", Longitude);
+                intent.putExtra("city", city);
+            }
+        });
 
         // for location reuse - copy coe from here.....
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
@@ -35,7 +79,9 @@ public class Addnew extends AppCompatActivity {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             try {
-                String city = Location(location.getLatitude(), location.getLongitude());
+                Latitude = location.getLatitude();
+                Longitude = location.getLongitude();
+                city = Location(location.getLatitude(), location.getLongitude());
                 Toast.makeText(Addnew.this, city, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
