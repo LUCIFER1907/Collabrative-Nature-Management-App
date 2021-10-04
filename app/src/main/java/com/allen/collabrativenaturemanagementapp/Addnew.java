@@ -24,7 +24,7 @@ import java.util.Locale;
 public class Addnew extends AppCompatActivity {
     public Button Birds, Animals, Landscape;
     String DBroot;
-    Double Latitude, Longitude;
+    String Latitude, Longitude;
     String city;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,33 +40,30 @@ public class Addnew extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(Addnew.this,adddata.class);
+                DBroot = "Birds";
+                intent.putExtra("type", DBroot);
                 startActivity(intent);
-                intent.putExtra("type", "Birds");
-                intent.putExtra("latitude", Latitude);
-                intent.putExtra("longitude", Longitude);
-                intent.putExtra("city", city);
+
             }
         });
         Animals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(Addnew.this,adddata.class);
+                DBroot = "Animals";
+                intent.putExtra("type", DBroot);
                 startActivity(intent);
-                intent.putExtra("type", "Animals");
-                intent.putExtra("latitude", Latitude);
-                intent.putExtra("longitude", Longitude);
-                intent.putExtra("city", city);
+
             }
         });
         Landscape.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(Addnew.this,adddata.class);
+                DBroot = "Landscape";
+                intent.putExtra("type", DBroot);
                 startActivity(intent);
-                intent.putExtra("type", "Landscape");
-                intent.putExtra("latitude", Latitude);
-                intent.putExtra("longitude", Longitude);
-                intent.putExtra("city", city);
+
             }
         });
 
@@ -79,8 +76,8 @@ public class Addnew extends AppCompatActivity {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             try {
-                Latitude = location.getLatitude();
-                Longitude = location.getLongitude();
+                Latitude = String.valueOf(location.getLatitude());
+                Longitude = String.valueOf(location.getLongitude());
                 city = Location(location.getLatitude(), location.getLongitude());
                 Toast.makeText(Addnew.this, city, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
