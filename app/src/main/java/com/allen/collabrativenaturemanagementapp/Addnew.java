@@ -26,6 +26,7 @@ public class Addnew extends AppCompatActivity {
     String DBroot;
     String Latitude, Longitude;
     String city;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

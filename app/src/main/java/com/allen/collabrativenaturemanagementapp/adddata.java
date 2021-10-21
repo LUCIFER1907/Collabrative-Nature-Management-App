@@ -69,7 +69,7 @@ public class adddata extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(imageUri != null){
-                        uploadFirebase(imageUri);
+                    uploadFirebase(imageUri);
                 }
                 else{
                     Toast.makeText(adddata.this, "No imaage Selected", Toast.LENGTH_SHORT).show();
@@ -82,33 +82,33 @@ public class adddata extends AppCompatActivity {
 
     private void uploadFirebase(Uri Uri) {
 
-            final StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(Uri));
+        final StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(Uri));
         fileRef.putFile(Uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<android.net.Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Model model = new Model(uri.toString());
-                            String modelID = root.push().getKey();
-                            root.child(modelID).setValue(model);
-                            progressBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(adddata.this, "Upload Successful", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                    progressBar.setVisibility(View.VISIBLE);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    Toast.makeText(adddata.this, "Upload Failed --"+ e.getMessage().toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<android.net.Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Model model = new Model(uri.toString());
+                        String modelID = root.push().getKey();
+                        root.child(modelID).setValue(model);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(adddata.this, "Upload Successful", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(adddata.this, "Upload Failed --"+ e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private String getFileExtension(Uri mUri){
