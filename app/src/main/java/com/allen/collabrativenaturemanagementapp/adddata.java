@@ -5,9 +5,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -27,6 +35,10 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class adddata extends AppCompatActivity {
     String Type;
     Button uploadBtn, showBtn;
@@ -34,9 +46,13 @@ public class adddata extends AppCompatActivity {
     TextView Lat, Longi;
     EditText name, Description;
     ProgressBar progressBar;
-    DatabaseReference root = FirebaseDatabase.getInstance().getReference("Image");
+    DatabaseReference root;
     StorageReference reference = FirebaseStorage.getInstance().getReference();
     Uri imageUri;
+    String Latitude;
+    String Longitude;
+    String city;
+
 
 
     @Override
@@ -45,6 +61,7 @@ public class adddata extends AppCompatActivity {
         setContentView(R.layout.activity_adddata);
 
         Type =  getIntent().getStringExtra("type");
+        root = FirebaseDatabase.getInstance().getReference(Type);
         uploadBtn = findViewById(R.id.upload);
         showBtn = findViewById(R.id.show);
         Lat = findViewById(R.id.lat);
@@ -76,10 +93,76 @@ public class adddata extends AppCompatActivity {
                 }
             }
         });
+// for location reuse - copy coe from here.....
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},1000);
+        }else {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            try {
+                Latitude = String.valueOf(location.getLatitude());
+                Lat.setText(Latitude);
+                Longitude = String.valueOf(location.getLongitude());
+                Longi.setText(Longitude);
+                city = Location(location.getLatitude(), location.getLongitude());
+                Toast.makeText(adddata.this, city, Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(adddata.this, "Not Found", Toast.LENGTH_SHORT).show();
+            }
 
+        }
+        //here part1 , onRequestPermissionsResult, private String Location()
 
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 1000:
+            {
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    try {
+                        String city = Location(location.getLatitude(), location.getLongitude());
+                        Toast.makeText(adddata.this, city, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(adddata.this, "Not Found", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(adddata.this, "Permission not granted", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+        }
+    }
+    private String Location(double lat, double lon){
+        String cityname = "";
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocation(lat,lon, 10);
+            if (addresses.size() > 0 ){
+                for (Address adr: addresses){
+                    if(adr.getLocality()!= null && adr.getLocality().length()>0){
+                        cityname = adr.getLocality();
+                        break;
+                    }
 
+                }
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+            cityname = "XYZ";
+        }
+
+        return cityname;
+    }
     private void uploadFirebase(Uri Uri) {
 
         final StorageReference fileRef = reference.child(System.currentTimeMillis() + "." + getFileExtension(Uri));
@@ -91,7 +174,11 @@ public class adddata extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         Model model = new Model(uri.toString());
                         String modelID = root.push().getKey();
-                        root.child(modelID).setValue(model);
+                        root.child(city).child(modelID).setValue(model);
+                        root.child(city).child(modelID).child("Name").setValue(name.getText().toString());
+                        root.child(city).child(modelID).child("Description").setValue(Description.getText().toString());
+                        root.child(city).child(modelID).child("Latitude").setValue(Latitude);
+                        root.child(city).child(modelID).child("Longitude").setValue(Longitude);
                         progressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(adddata.this, "Upload Successful", Toast.LENGTH_SHORT).show();
                     }
