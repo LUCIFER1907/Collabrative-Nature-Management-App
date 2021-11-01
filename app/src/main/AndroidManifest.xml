@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CollabrativeNatureManagementApp">
-        <activity android:name=".adddata"></activity>
+        <activity android:name=".common"></activity>
+        <activity android:name=".show" />
+        <activity android:name=".adddata" />
         <activity android:name=".Addnew" />
         <activity
             android:name=".DashboardActivity"

@@ -14,7 +14,12 @@
         android:icon="@drawable/ic_baseline_add_location_24"
         android:title="In Your Area" />
     <item
+        android:id="@+id/common"
+        android:icon="@drawable/ic_baseline_add_location_24"
+        android:title="Common" />
+    <item
         android:id="@+id/logout"
         android:icon="@drawable/ic_baseline_logout_24"
         android:title="Logout" />
+
 </menu>

@@ -2,10 +2,11 @@ package com.allen.collabrativenaturemanagementapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -13,60 +14,43 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class Addnew extends AppCompatActivity {
-    public Button Birds, Animals, Landscape;
-    String DBroot;
-    String Latitude, Longitude;
+public class show extends AppCompatActivity {
+    private RecyclerView recyclerView;
+    private ArrayList<Model> list;
+
+    private MyAdapter adapter;
+
+
+    private String Latitude;
+    private String Longitude;
     String city;
+    private DatabaseReference root;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_addnew);
+        setContentView(R.layout.activity_show);
 
-
-        Birds = findViewById(R.id.BirdBtn);
-        Animals = findViewById(R.id.AnimalBtn);
-        Landscape = findViewById(R.id.sceneBtn);
-
-        Birds.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(Addnew.this,adddata.class);
-                DBroot = "Birds";
-                intent.putExtra("type", DBroot);
-                startActivity(intent);
-
-            }
-        });
-        Animals.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(Addnew.this,adddata.class);
-                DBroot = "Animals";
-                intent.putExtra("type", DBroot);
-                startActivity(intent);
-
-            }
-        });
-        Landscape.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(Addnew.this,adddata.class);
-                DBroot = "Landscape";
-                intent.putExtra("type", DBroot);
-                startActivity(intent);
-
-            }
-        });
+        recyclerView = findViewById(R.id.recyclerview);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        list = new ArrayList<>();
+        adapter = new MyAdapter(this , list);
+        recyclerView.setAdapter(adapter);
 
         // for location reuse - copy coe from here.....
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
@@ -80,14 +64,34 @@ public class Addnew extends AppCompatActivity {
                 Latitude = String.valueOf(location.getLatitude());
                 Longitude = String.valueOf(location.getLongitude());
                 city = Location(location.getLatitude(), location.getLongitude());
-                Toast.makeText(Addnew.this, city, Toast.LENGTH_SHORT).show();
+                root = FirebaseDatabase.getInstance().getReference(city);
+                Toast.makeText(show.this, city, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(Addnew.this, "Not Found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(show.this, "Not Found", Toast.LENGTH_SHORT).show();
             }
 
         }
         //here part1 , onRequestPermissionsResult, private String Location()
+
+        root = FirebaseDatabase.getInstance().getReference(city);
+
+        root.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Model model = dataSnapshot.getValue(Model.class);
+                    list.add(model);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -100,14 +104,14 @@ public class Addnew extends AppCompatActivity {
                     Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     try {
                         String city = Location(location.getLatitude(), location.getLongitude());
-                        Toast.makeText(Addnew.this, city, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(show.this, city, Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(Addnew.this, "Not Found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(show.this, "Not Found", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
-                    Toast.makeText(Addnew.this, "Permission not granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(show.this, "Permission not granted", Toast.LENGTH_SHORT).show();
                 }
                 break;
             }
@@ -135,5 +139,4 @@ public class Addnew extends AppCompatActivity {
 
         return cityname;
     }
-
 }

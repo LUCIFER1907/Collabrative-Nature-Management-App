@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Context;
@@ -25,12 +27,19 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class DashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     Toolbar toolbar;
@@ -52,13 +61,15 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
         navigationView.setNavigationItemSelectedListener(this);
 
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},1000);
         }else {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             try {
                 String city = Location(location.getLatitude(), location.getLongitude());
                 Toast.makeText(DashboardActivity.this, city, Toast.LENGTH_SHORT).show();
@@ -80,7 +91,7 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                     if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
                     {
                         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         try {
                             String city = Location(location.getLatitude(), location.getLongitude());
                             Toast.makeText(DashboardActivity.this, city, Toast.LENGTH_SHORT).show();
@@ -135,6 +146,11 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
                 break;
             case R.id.area :
                 Toast.makeText(DashboardActivity.this, "area Clicked", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), show.class));
+                break;
+            case R.id.common :
+                Toast.makeText(DashboardActivity.this, "common Clicked", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), common.class));
                 break;
             case R.id.logout :
                 Toast.makeText(DashboardActivity.this, "logout Clicked", Toast.LENGTH_SHORT).show();

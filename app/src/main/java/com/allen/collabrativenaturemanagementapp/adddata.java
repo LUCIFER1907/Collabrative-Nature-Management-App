@@ -46,7 +46,7 @@ public class adddata extends AppCompatActivity {
     TextView Lat, Longi;
     EditText name, Description;
     ProgressBar progressBar;
-    DatabaseReference root;
+    DatabaseReference root, common, common2, direct;
     StorageReference reference = FirebaseStorage.getInstance().getReference();
     Uri imageUri;
     String Latitude;
@@ -61,6 +61,8 @@ public class adddata extends AppCompatActivity {
         setContentView(R.layout.activity_adddata);
 
         Type =  getIntent().getStringExtra("type");
+        common = FirebaseDatabase.getInstance().getReference("Images");
+        common2 = FirebaseDatabase.getInstance().getReference("Common");
         root = FirebaseDatabase.getInstance().getReference(Type);
         uploadBtn = findViewById(R.id.upload);
         showBtn = findViewById(R.id.show);
@@ -85,8 +87,11 @@ public class adddata extends AppCompatActivity {
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imageUri != null){
+                if(imageUri != null && name.getText().toString().trim().length() > 0){
                     uploadFirebase(imageUri);
+                    Intent intent=new Intent(adddata.this,DashboardActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
                 else{
                     Toast.makeText(adddata.this, "No imaage Selected", Toast.LENGTH_SHORT).show();
@@ -100,13 +105,14 @@ public class adddata extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},1000);
         }else {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             try {
                 Latitude = String.valueOf(location.getLatitude());
                 Lat.setText(Latitude);
                 Longitude = String.valueOf(location.getLongitude());
                 Longi.setText(Longitude);
                 city = Location(location.getLatitude(), location.getLongitude());
+                direct = FirebaseDatabase.getInstance().getReference(city);
                 Toast.makeText(adddata.this, city, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -125,7 +131,7 @@ public class adddata extends AppCompatActivity {
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
                     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     try {
                         String city = Location(location.getLatitude(), location.getLongitude());
                         Toast.makeText(adddata.this, city, Toast.LENGTH_SHORT).show();
@@ -174,6 +180,9 @@ public class adddata extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         Model model = new Model(uri.toString());
                         String modelID = root.push().getKey();
+                        common.child(city).child(modelID).setValue(model);
+                        common2.child(modelID).setValue(model);
+                        direct.child(modelID).setValue(model);
                         root.child(city).child(modelID).setValue(model);
                         root.child(city).child(modelID).child("Name").setValue(name.getText().toString());
                         root.child(city).child(modelID).child("Description").setValue(Description.getText().toString());
