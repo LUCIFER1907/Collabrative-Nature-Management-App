@@ -64,20 +64,20 @@ public class DashboardActivity extends AppCompatActivity implements NavigationVi
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},1000);
-        }else {
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},1000);
+            }else {
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             try {
                 String city = Location(location.getLatitude(), location.getLongitude());
                 Toast.makeText(DashboardActivity.this, city, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(DashboardActivity.this, "Not Found", Toast.LENGTH_SHORT).show();
-            }
 
+  Toast.makeText(DashboardActivity.this, "Not Found", Toast.LENGTH_SHORT).show();
+            }
         }
 
 
